@@ -139,13 +139,13 @@ h1 {
 }
 
 .search-form input[type="text"] {
-  width: 100%;
+  width: 70%;
   color: #2d3436;
   background-color: #FAEED1;
 }
 
 .search-form input[type="submit"] {
-  width: 100%;
+  width: 20%;
   text-transform: uppercase;
   background-color: #607274;
   color: #FAEED1;
@@ -169,6 +169,15 @@ h1 {
   flex-wrap: wrap;
   margin-bottom: 1rem;
   gap: 5px;
+  
+}
+.selection{
+  height: 3rem;
+  background-color: #607274;
+  color: #FAEED1;
+  border: none;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 /* Recipes Section */
