@@ -1,12 +1,13 @@
-import logo from "./logo.svg";
+
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Recipe from "./components/Recipe";
 import Alert from "./components/Alert";
 import Axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import Desc from "./components/Desc";
 import {ClipLoader} from 'react-spinners';
+
 
 function App() {
   const [query, setQuery] = useState("");
@@ -19,20 +20,17 @@ function App() {
   const [mealType, setMealType] = useState("")
   const [loading, setLoading] = useState(false);
 
-  const APP_ID = "0c14ccf2";
-  const APP_KEY = "57cc15f739234960da48d874bff04fae";
+  const APP_ID = "4248dc5d";
+  const APP_KEY = "b2a617bd5fb76e3f8639f858ab36ebca";
 
 
   const url = `https://api.edamam.com/search?app_id=${APP_ID}&app_key=${APP_KEY}` +
-  `${query ? `q=${query}` : ''}` +
+  `${query ? `&q=${query}` : ''}` +
   `${selectedNumber ? `&from=0&to=${selectedNumber}` : `&from=0&to=5`}` + 
   `${cuisineType ? `&cuisineType=${encodeURIComponent(cuisineType)}` : ''}` +
   `${mealType ? `&mealType=${encodeURIComponent(mealType)}` : ''}`;
 
 
-  useEffect(() => {
-    return () => {};
-  }, []);
 
   const getData = async () => {
     if (query !== "") {
@@ -43,22 +41,25 @@ function App() {
           return;
         }
         setRecipes(result.data.hits);
+        console.log(url)
         setAlert("");
-        console.log(result.data.hits)
         setQuery("");
         
       } catch (error) {
         console.error("Error fetching data:", error);
         setAlert("Error retrieving data. Please try again.");
       }finally{
-        setLoading(false);
+        setLoading(true)
       }
+    }else {
+      setAlert("Please fill the form");
     }
   };
 
   const onSubmitSearch = (e) => {
     e.preventDefault();
     setShowDesc(false);
+    setLoading(true)
     getData();
   };
 
@@ -83,7 +84,7 @@ function App() {
     setMealType(e.target.value);
   }
   
-
+  
   return (
     <div className="App">
       <h1 onClick={getData}>Search Your Meal</h1>
@@ -154,14 +155,12 @@ function App() {
         </select>
 
         </div>
-       
-        
         }
 
 
       {showDesc !== false && <Desc />}
       {loading ? 
-      <ClipLoader loading={loading} size={150}/> : (
+      <ClipLoader loading={loading} size={200} color="#607274"/> : (
       <div className="recipes">
         {recipes !== [] &&
           recipes.map((recipe) => <Recipe key={uuidv4()} recipe={recipe} />)}
