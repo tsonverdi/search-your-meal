@@ -258,6 +258,8 @@ h1 {
   font-size: 1.3rem;
 }
 
+
+
 @media only screen and (max-width: 768px) {
   .search-form {
     max-width: 100%;

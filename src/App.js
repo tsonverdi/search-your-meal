@@ -6,6 +6,7 @@ import Alert from "./components/Alert";
 import Axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import Desc from "./components/Desc";
+import {ClipLoader} from 'react-spinners';
 
 function App() {
   const [query, setQuery] = useState("");
@@ -16,12 +17,14 @@ function App() {
   const [filterOn, setFilterOn] = useState(false)
   const [cuisineType, setCuisineType] = useState("")
   const [mealType, setMealType] = useState("")
+  const [loading, setLoading] = useState(false);
 
   const APP_ID = "0c14ccf2";
-  const APP_KEY = "f72142765ee4820deb6f9e4db64d1aa8";
+  const APP_KEY = "57cc15f739234960da48d874bff04fae";
 
 
-  const url = `https://api.edamam.com/search?q=${query}&app_id=${APP_ID}&app_key=${APP_KEY}` +
+  const url = `https://api.edamam.com/search?app_id=${APP_ID}&app_key=${APP_KEY}` +
+  `${query ? `q=${query}` : ''}` +
   `${selectedNumber ? `&from=0&to=${selectedNumber}` : `&from=0&to=5`}` + 
   `${cuisineType ? `&cuisineType=${encodeURIComponent(cuisineType)}` : ''}` +
   `${mealType ? `&mealType=${encodeURIComponent(mealType)}` : ''}`;
@@ -36,19 +39,20 @@ function App() {
       try {
         const result = await Axios.get(url);
         if (!result.data.more) {
-          setAlert("Kein Essen mit diesem Namen");
+          setAlert("No dish with this name.");
           return;
         }
         setRecipes(result.data.hits);
         setAlert("");
-        console.log(url);
+        console.log(result.data.hits)
         setQuery("");
+        
       } catch (error) {
         console.error("Error fetching data:", error);
-        setAlert("Fehler beim Abrufen der Daten. Bitte versuchen Sie es erneut.");
+        setAlert("Error retrieving data. Please try again.");
+      }finally{
+        setLoading(false);
       }
-    } else {
-      setAlert("Bitte geben Sie einen Suchbegriff ein");
     }
   };
 
@@ -78,6 +82,7 @@ function App() {
   const handleMealType = (e) => {
     setMealType(e.target.value);
   }
+  
 
   return (
     <div className="App">
@@ -152,11 +157,16 @@ function App() {
        
         
         }
+
+
       {showDesc !== false && <Desc />}
+      {loading ? 
+      <ClipLoader loading={loading} size={150}/> : (
       <div className="recipes">
         {recipes !== [] &&
           recipes.map((recipe) => <Recipe key={uuidv4()} recipe={recipe} />)}
       </div>
+      )}
     </div>
   );
 }
