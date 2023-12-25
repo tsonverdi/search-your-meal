@@ -41,11 +41,12 @@ export const HEALTH_LABELS = [
 export const MEAL_TYPES = [
     { type: 'mealType', value: 'breakfast' },
     { type: 'mealType', value: 'brunch' },
-    { type: 'mealType', value: 'lunch/dinner' },
+    { type: 'mealType', value: 'lunch' },
+    { type: 'mealType', value: 'dinner' },
     { type: 'mealType', value: 'snack' },
     { type: 'mealType', value: 'teatime' },
   ];
-  
+
 export const NUMBER_OF_RECIPES = [
     { value: '5' },
     { value: '10' },

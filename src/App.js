@@ -32,13 +32,13 @@ function App() {
   `${selectedNumber ? `&from=0&to=${selectedNumber}` : `&from=0&to=5`}` + 
   `${cuisineType ? `&cuisineType=${encodeURIComponent(cuisineType)}` : ''}` +
   `${mealType ? `&mealType=${encodeURIComponent(mealType)}` : ''}`+
-  `${selectedLabel ? `&selectedLabel=${selectedLabel}` : ''}`;
+  `${selectedLabel ? `&health=${selectedLabel}` : ''}`;
 
-  const blankQueryUrl = `https://api.edamam.com/api/recipes/v2?type=public&app_id=${APP_ID}&app_key=${APP_KEY}&random=true`+
+  const blankQueryUrl = `https://api.edamam.com/api/recipes/v2?type=public&app_id=${APP_ID}&app_key=${APP_KEY}`+
   `${selectedNumber ? `&from=0&to=${selectedNumber}` : `&from=0&to=15`}` + 
   `${cuisineType ? `&cuisineType=${encodeURIComponent(cuisineType)}` : ''}` +
   `${mealType ? `&mealType=${encodeURIComponent(mealType)}` : ''}` +
-  `${selectedLabel ? `&selectedLabel=${selectedLabel}` : ''}`;
+  `${selectedLabel ? `&health=${selectedLabel}` : ''}`;
 
 
   const allBlankUrl = `https://api.edamam.com/api/recipes/v2?type=public&app_id=${APP_ID}&app_key=${APP_KEY}&cuisineType=Asian&random=true`
@@ -47,11 +47,12 @@ function App() {
     if (query !== "") {
       try {
         const result = await Axios.get(url);
-        if (!result.data.more) {
-          setAlert("No dish with this name.");
-          return;
+        if(result.data.count === 0){
+          console.log(url)
+          return setAlert("No Recipes Found")
         }
         setRecipes(result.data.hits);
+        
         setAlert("");
         setQuery("");
         
@@ -63,10 +64,12 @@ function App() {
       }
     }else if(query === "" &&  (cuisineType !== "" || mealType !== "" || selectedLabel !== "")){
       const result = await Axios.get(blankQueryUrl);
+      console.log(blankQueryUrl)
       setRecipes(result.data.hits);
       setLoading(false)
     }else{
       const result = await Axios.get(allBlankUrl);
+      console.log(allBlankUrl)
       setRecipes(result.data.hits);
       setLoading(false)
       
@@ -89,7 +92,7 @@ function App() {
   };
 
   const handleCuisine = (e) => {
-    setCuisineType(e.target.value)
+    setCuisineType(capitalizeFirstLetter(e.target.value))
   }
 
   const handleFilter = (e) => {
@@ -98,7 +101,7 @@ function App() {
   }
 
   const handleMealType = (e) => {
-    setMealType(e.target.value);
+    setMealType(capitalizeFirstLetter(e.target.value));
   }
 
   const handleSelectChange = (e) => {
@@ -157,7 +160,7 @@ function App() {
           id="healthLabels"
         >
           {HEALTH_LABELS.map((label)=> (
-            <option key={label.webLabel} value={label.apiParameter}>
+            <option key={label.apiParameter} value={label.apiParameter}>
               {label.webLabel}
             </option>
           ))}
