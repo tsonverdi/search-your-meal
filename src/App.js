@@ -48,11 +48,10 @@ function App() {
       try {
         const result = await Axios.get(url);
         if(result.data.count === 0){
-          console.log(url)
           return setAlert("No Recipes Found")
         }
         setRecipes(result.data.hits);
-        
+        console.log(url)
         setAlert("");
         setQuery("");
         
@@ -92,7 +91,7 @@ function App() {
   };
 
   const handleCuisine = (e) => {
-    setCuisineType(capitalizeFirstLetter(e.target.value))
+    setCuisineType(e.target.value)
   }
 
   const handleFilter = (e) => {
@@ -101,7 +100,7 @@ function App() {
   }
 
   const handleMealType = (e) => {
-    setMealType(capitalizeFirstLetter(e.target.value));
+    setMealType(e.target.value);
   }
 
   const handleSelectChange = (e) => {

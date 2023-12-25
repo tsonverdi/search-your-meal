@@ -1,4 +1,5 @@
 export const HEALTH_LABELS = [
+    { type: 'Health', webLabel: 'Select Health Label', apiParameter: 'alcohol-cocktail', definition: 'Describes an alcoholic cocktail' },
     { type: 'Health', webLabel: 'Alcohol-Cocktail', apiParameter: 'alcohol-cocktail', definition: 'Describes an alcoholic cocktail' },
     { type: 'Health', webLabel: 'Alcohol-Free', apiParameter: 'alcohol-free', definition: 'No alcohol used or contained' },
     { type: 'Health', webLabel: 'Celery-Free', apiParameter: 'celery-free', definition: 'Does not contain celery or derivatives' },
@@ -39,6 +40,7 @@ export const HEALTH_LABELS = [
 
 
 export const MEAL_TYPES = [
+    { type: 'mealType', value: 'Select Meal Type' },
     { type: 'mealType', value: 'breakfast' },
     { type: 'mealType', value: 'brunch' },
     { type: 'mealType', value: 'lunch' },
@@ -48,6 +50,7 @@ export const MEAL_TYPES = [
   ];
 
 export const NUMBER_OF_RECIPES = [
+    { value: 'Select Number of Recipes' },
     { value: '5' },
     { value: '10' },
     { value: '15' },
@@ -58,6 +61,7 @@ export const NUMBER_OF_RECIPES = [
 
 
 export const CUISINE_TYPES = [
+    { type: 'cuisineType', value: 'Select Cuisine' },
     { type: 'cuisineType', value: 'american' },
     { type: 'cuisineType', value: 'asian' },
     { type: 'cuisineType', value: 'british' },
