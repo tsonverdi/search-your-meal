@@ -31,11 +31,17 @@ function App() {
   `${query ? `&q=${query}` : ''}` +
   `${selectedNumber ? `&from=0&to=${selectedNumber}` : `&from=0&to=5`}` + 
   `${cuisineType ? `&cuisineType=${encodeURIComponent(cuisineType)}` : ''}` +
-  `${mealType ? `&mealType=${encodeURIComponent(mealType)}` : ''}`;
+  `${mealType ? `&mealType=${encodeURIComponent(mealType)}` : ''}`+
+  `${selectedLabel ? `&selectedLabel=${selectedLabel}` : ''}`;
 
-  const blankUrl = `https://api.edamam.com/api/recipes/v2?type=public&app_id=${APP_ID}&app_key=${APP_KEY}&cuisineType=Asian&random=true`
+  const blankQueryUrl = `https://api.edamam.com/api/recipes/v2?type=public&app_id=${APP_ID}&app_key=${APP_KEY}&random=true`+
+  `${selectedNumber ? `&from=0&to=${selectedNumber}` : `&from=0&to=15`}` + 
+  `${cuisineType ? `&cuisineType=${encodeURIComponent(cuisineType)}` : ''}` +
+  `${mealType ? `&mealType=${encodeURIComponent(mealType)}` : ''}` +
+  `${selectedLabel ? `&selectedLabel=${selectedLabel}` : ''}`;
 
 
+  const allBlankUrl = `https://api.edamam.com/api/recipes/v2?type=public&app_id=${APP_ID}&app_key=${APP_KEY}&cuisineType=Asian&random=true`
 
   const getData = async () => {
     if (query !== "") {
@@ -46,8 +52,6 @@ function App() {
           return;
         }
         setRecipes(result.data.hits);
-        console.log(url)
-        console.log(blankUrl)
         setAlert("");
         setQuery("");
         
@@ -57,10 +61,15 @@ function App() {
       }finally{
         setLoading(false)
       }
-    }else {
-      const result = await Axios.get(blankUrl);
+    }else if(query === "" &&  (cuisineType !== "" || mealType !== "" || selectedLabel !== "")){
+      const result = await Axios.get(blankQueryUrl);
       setRecipes(result.data.hits);
       setLoading(false)
+    }else{
+      const result = await Axios.get(allBlankUrl);
+      setRecipes(result.data.hits);
+      setLoading(false)
+      
     }
   };
 
@@ -148,7 +157,7 @@ function App() {
           id="healthLabels"
         >
           {HEALTH_LABELS.map((label)=> (
-            <option key={label.webLabel} value={label.webLabel}>
+            <option key={label.webLabel} value={label.apiParameter}>
               {label.webLabel}
             </option>
           ))}
