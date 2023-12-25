@@ -7,6 +7,8 @@ import Axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import Desc from "./components/Desc";
 import {ClipLoader} from 'react-spinners';
+import { CUISINE_TYPES, HEALTH_LABELS,MEAL_TYPES, NUMBER_OF_RECIPES } from './constants/constants';
+import { capitalizeFirstLetter } from "./functions/uppercase";
 
 
 function App() {
@@ -18,17 +20,20 @@ function App() {
   const [filterOn, setFilterOn] = useState(false)
   const [cuisineType, setCuisineType] = useState("")
   const [mealType, setMealType] = useState("")
+  const [selectedLabel, setSelectedLabel] = useState("");
   const [loading, setLoading] = useState(false);
 
   const APP_ID = "4248dc5d";
   const APP_KEY = "b2a617bd5fb76e3f8639f858ab36ebca";
 
 
-  const url = `https://api.edamam.com/search?app_id=${APP_ID}&app_key=${APP_KEY}` +
+  const url = `https://api.edamam.com/api/recipes/v2?type=public&app_id=${APP_ID}&app_key=${APP_KEY}` +
   `${query ? `&q=${query}` : ''}` +
   `${selectedNumber ? `&from=0&to=${selectedNumber}` : `&from=0&to=5`}` + 
   `${cuisineType ? `&cuisineType=${encodeURIComponent(cuisineType)}` : ''}` +
   `${mealType ? `&mealType=${encodeURIComponent(mealType)}` : ''}`;
+
+  const blankUrl = `https://api.edamam.com/api/recipes/v2?type=public&app_id=${APP_ID}&app_key=${APP_KEY}&cuisineType=Asian&random=true`
 
 
 
@@ -42,6 +47,7 @@ function App() {
         }
         setRecipes(result.data.hits);
         console.log(url)
+        console.log(blankUrl)
         setAlert("");
         setQuery("");
         
@@ -49,10 +55,12 @@ function App() {
         console.error("Error fetching data:", error);
         setAlert("Error retrieving data. Please try again.");
       }finally{
-        setLoading(true)
+        setLoading(false)
       }
     }else {
-      setAlert("Please fill the form");
+      const result = await Axios.get(blankUrl);
+      setRecipes(result.data.hits);
+      setLoading(false)
     }
   };
 
@@ -83,11 +91,15 @@ function App() {
   const handleMealType = (e) => {
     setMealType(e.target.value);
   }
+
+  const handleSelectChange = (e) => {
+    setSelectedLabel(e.target.value);
+  };
   
   
   return (
     <div className="App">
-      <h1 onClick={getData}>Search Your Meal</h1>
+      <h1>Search Your Meal</h1>
       <form className="search-form" onSubmit={onSubmitSearch}>
         {alert !== "" && <Alert alert={alert} />}
         <input
@@ -98,64 +110,64 @@ function App() {
           value={query}
         />
         <input type="submit" value="search"  />
+        
       </form>
-      <button onClick={handleFilter} className="button">Filters +</button>
+      <div class="button-container">
+       <button onClick={handleFilter} className="button">Filters +</button>
         {filterOn !== false && 
         <div className="filter-buttons">
+          <label id="numberOfRecipes">Select the number of recipes:</label>
            <select
           className="selection"
           value={selectedNumber}
           onChange={handleSelection}
         >
-          <option value="" selected hidden>Select the number of recipes</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
+          {NUMBER_OF_RECIPES.map((number)=>
+          <option value={number.value} key={number.value}>
+            {number.value}
+          </option>)}
         </select>
-
+          <label id="selectedCuisine">Select Cuisine:</label>
         <select
           className="selection"
           value={cuisineType}
           onChange={handleCuisine}
           
         >
-          <option value="" selected hidden>Select the Cuisine</option>
-          <option value="American">American</option>
-          <option value="Asian">Asian</option>
-          <option value="British">British</option>
-          <option value="Carribean">Carribean</option>
-          <option value="Central Europ">Central Europe</option>
-          <option value="Chinese">Chinese</option>
-          <option value="Eastern Europe">Eastern Europe</option>
-          <option value="French">French</option>
-          <option value="Indian">Indian</option>
-          <option value="Italian">Italian</option>
-          <option value="Japanese">Japanese</option>
-          <option value="Kosher">Kosher</option>
-          <option value="Mediterranean">Mediterranean</option>
-          <option value="Mexican">Mexican</option>
-          <option value="Middle Easter">Middle Eastern</option>
-          <option value="Nordic">Nordic</option>
-          <option value="South American">South American</option>
-          <option value="South East Asia">South East Asian</option>
+          {CUISINE_TYPES.map((cuisine)=>
+          <option value={cuisine.value} key={cuisine.value}>
+            {capitalizeFirstLetter(cuisine.value)}
+          </option>)}
         </select>
 
+        <label htmlFor="healthLabels">Select Health Label:</label>
+        <select
+          className="selection"
+          value={selectedLabel}
+          onChange={handleSelectChange}
+          id="healthLabels"
+        >
+          {HEALTH_LABELS.map((label)=> (
+            <option key={label.webLabel} value={label.webLabel}>
+              {label.webLabel}
+            </option>
+          ))}
+        </select>
+            <label htmlFor="mealType">Select Meal Type:</label>
         <select
           className="selection"
           value={mealType}
           onChange={handleMealType}
         >
-          <option value="" selected hidden>Select meal type</option>
-          <option value="Breakfast">Breakfast</option>
-          <option value="Dinner">Dinner</option>
-          <option value="Lunch">Lunch</option>
-          <option value="Snack">Snack</option>
-          <option value="Teatime">Teatime</option>
+          {MEAL_TYPES.map((meal)=>
+          <option value={meal.value} key={meal.value}>
+            {capitalizeFirstLetter(meal.value)}
+          </option>)}
         </select>
 
         </div>
         }
+      </div>
 
 
       {showDesc !== false && <Desc />}
